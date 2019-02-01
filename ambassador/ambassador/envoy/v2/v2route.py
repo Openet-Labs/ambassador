@@ -18,6 +18,9 @@ from ..common import EnvoyRoute
 from ...ir import IRResource
 from ...ir.irmapping import IRMappingGroup
 
+from math import floor
+from math import fmod
+
 from .v2ratelimitaction import V2RateLimitAction
 
 if TYPE_CHECKING:
@@ -92,10 +95,27 @@ class V2Route(dict):
                 self['redirect']['path_redirect'] = path_redirect
         else:
             # No host_redirect. Do route stuff.
-            clusters = [ {
-                'name': mapping.cluster.name,
-                'weight': mapping.weight
-            } for mapping in group.mappings ]
+            reminder = 0
+            if len(group.mappings) > 0:
+                reminder = fmod(100, len(group.mappings))
+        
+            clusters = []
+
+            for mapping in group.mappings:
+                n = 0
+                if reminder > 0:
+                    n = 1
+                reminder -= 1
+                clusters.append({
+                  'name': mapping.cluster.name,
+                  'weight': floor(mapping.weight) + n
+                 })
+ 
+#            clusters = [ {
+#                'name': mapping.cluster.name,
+#                'weight': floor(mapping.weight)
+#            } for mapping in group.mappings ]
+            
 
             route = {
                 'priority': group.get('priority'),
