@@ -39,6 +39,13 @@ class V2Cluster(dict):
                         'lb_endpoints': self.get_endpoints(cluster)
                     }
                 ]
+            },
+            'upstream_connection_options': {
+                'tcp_keepalive': {
+                    'keepalive_probes': 9,
+                    'keepalive_time': 600,
+                    'keepalive_interval': 75
+                }
             }
         }
 
