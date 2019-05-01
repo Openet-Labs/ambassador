@@ -46,6 +46,10 @@ service:
   #         enabled: false
   # loadBalancerSourceRanges:
   #   - YOUR_IP_RANGE
+  livenessProbe:
+    FailureThreshold: 3
+  readinessProbe:
+    FailureThreshold: 3
 
 adminService:
   create: true
